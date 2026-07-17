@@ -47,7 +47,7 @@ async function loadAuthHelper() {
   }));
 
   vi.doMock(secretsPath, () => ({
-    ALLOWED_ORIGIN: "http://localhost:3000/op-market-shop",
+    ALLOWED_ORIGIN: "http://localhost:3000",
   }));
 
   const mod = await import(authHelperPath);
