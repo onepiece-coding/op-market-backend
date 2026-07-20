@@ -8,7 +8,7 @@ type SecretsMock = {
   PAYPAL_CLIENT_SECRET: string;
   PAYPAL_ENV: "sandbox" | "live";
   PAYPAL_CURRENCY: string;
-  SecretsMockvALLOWED_ORIGIN: string;
+  ALLOWED_ORIGIN: string;
 };
 
 async function loadPayPalService(overrides: Partial<SecretsMock> = {}) {
@@ -27,11 +27,11 @@ async function loadPayPalService(overrides: Partial<SecretsMock> = {}) {
 }
 
 describe("paypalService", () => {
-  const originalFetch = global.fetch; // *
+  const originalFetch = globalThis.fetch;
 
   afterEach(() => {
     vi.clearAllMocks();
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
   });
 
   it("auth/token fetch builds the correct request and returns access token", async () => {
@@ -53,7 +53,7 @@ describe("paypalService", () => {
         }),
       });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     await createPayPalOrder(25.5, 123);
 
@@ -98,7 +98,7 @@ describe("paypalService", () => {
         }),
       });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     const result = await createPayPalOrder(25.5, 123);
 
@@ -156,7 +156,7 @@ describe("paypalService", () => {
       text: async () => "Unauthorized",
     });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     await expect(createPayPalOrder(10)).rejects.toThrow(
       "PayPal auth failed: 401 Unauthorized",
@@ -178,7 +178,7 @@ describe("paypalService", () => {
         text: async () => "Create failed",
       });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     await expect(createPayPalOrder(10)).rejects.toThrow(
       "PayPal create order failed: 500 Create failed",
@@ -202,7 +202,7 @@ describe("paypalService", () => {
         }),
       });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     const result = await createPayPalOrder(10, 123);
 
@@ -230,7 +230,7 @@ describe("paypalService", () => {
         json: async () => ({ status: "COMPLETED", id: "capture-1" }),
       });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     await capturePayPalOrder("paypal-order-123");
 
@@ -268,7 +268,7 @@ describe("paypalService", () => {
         json: async () => capturePayload,
       });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     const result = await capturePayPalOrder("paypal-order-123");
 
@@ -290,7 +290,7 @@ describe("paypalService", () => {
         text: async () => "Capture failed",
       });
 
-    global.fetch = fetchMock as typeof fetch;
+    globalThis.fetch = fetchMock as typeof fetch;
 
     await expect(capturePayPalOrder("paypal-order-123")).rejects.toThrow(
       "PayPal capture failed: 422 Capture failed",

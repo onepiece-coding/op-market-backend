@@ -28,6 +28,21 @@ const isOrderStatus = (value: unknown): value is OrderStatus => {
   );
 };
 
+const orderProductInclude = {
+  products: {
+    include: {
+      product: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          imageUrl: true,
+        },
+      },
+    },
+  },
+};
+
 /**
  * @desc   Create Order
  * @route  api/v1/orders
@@ -180,9 +195,7 @@ export const listOrdersCtrl = asyncHandler(
       where: {
         userId: req.user!.id,
       },
-      include: {
-        products: true, // only returns productId and quantity
-      },
+      include: orderProductInclude,
     });
 
     res.status(200).json(orders);
@@ -235,7 +248,7 @@ export const getOrderByIdCtrl = asyncHandler(
       ? await prismaClient.order.findUnique({
           where: { id },
           include: {
-            products: true,
+            ...orderProductInclude,
             events: true,
           },
         })
@@ -245,7 +258,7 @@ export const getOrderByIdCtrl = asyncHandler(
             userId: req.user!.id,
           },
           include: {
-            products: true,
+            ...orderProductInclude,
             events: true,
           },
         });
@@ -289,6 +302,13 @@ export const listAllOrdersCtrl = asyncHandler(
       where: whereClause,
       skip,
       take: limit,
+      include: {
+        user: {
+          omit: {
+            password: true, // Hides the password field from the user object
+          },
+        },
+      },
     });
 
     const pageCount = Math.ceil(total / limit);
@@ -376,6 +396,7 @@ export const ListUserOrdersCtrl = asyncHandler(
       where: whereClause,
       skip,
       take: limit,
+      include: orderProductInclude,
     });
 
     const pageCount = Math.ceil(total / limit);
