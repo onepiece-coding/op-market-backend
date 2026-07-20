@@ -111,6 +111,16 @@ npm run dev
 
 ---
 
+**Test credentials**
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@email.com | Pass@1234 |
+| User | user@email.com | Pass@1234 |
+| Paypal | sb-jm1bo50147124@personal.example.com | H!we}8,k |
+
+---
+
 ## License
 
 ISC
